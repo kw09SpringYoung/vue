@@ -1,5 +1,5 @@
 /* @flow */
-
+// 当前对象中是否有__proto__属性
 // can we use __proto__?
 export const hasProto = '__proto__' in {}
 

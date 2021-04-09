@@ -4961,7 +4961,10 @@
   var uid$3 = 0;
 
   function initMixin (Vue) {
+    // 给Vue实例添加_init()方法
+    // 合并 options/初始化操作
     Vue.prototype._init = function (options) {
+
       var vm = this;
       // a uid
       vm._uid = uid$3++;
@@ -4975,8 +4978,10 @@
       }
 
       // a flag to avoid this being observed
+      // 如果是Vue实例不需要被observe
       vm._isVue = true;
       // merge options
+      // 合并options
       if (options && options._isComponent) {
         // optimize internal component instantiation
         // since dynamic options merging is pretty slow, and none of the
@@ -4995,13 +5000,23 @@
       }
       // expose real self
       vm._self = vm;
+      // vm的生命周期相关变量初始化
+      // $children/$parent/$root/$refs
       initLifecycle(vm);
+      // vm的事件监听初始化，父组件绑定在当前组件上的事件
       initEvents(vm);
+      // vm的编译render初始化
+      // $slots/$scopedSlots/_c/$createElement/$attrs/$listeners
       initRender(vm);
+      // beforeCreate生命钩子的回调
       callHook(vm, 'beforeCreate');
+      // 把inject的成员注入到vm上
       initInjections(vm); // resolve injections before data/props
+      // 初始化状态vm的_props/methods/_data/computed/watch
       initState(vm);
+      // 初始化provide
       initProvide(vm); // resolve provide after data/props
+      // created生命钩子的回调
       callHook(vm, 'created');
 
       /* istanbul ignore if */
@@ -5010,7 +5025,7 @@
         mark(endTag);
         measure(("vue " + (vm._name) + " init"), startTag, endTag);
       }
-
+      // 如果没有提供el，调用$mount()挂载
       if (vm.$options.el) {
         vm.$mount(vm.$options.el);
       }
@@ -5073,6 +5088,7 @@
     return modified
   }
 
+  // 此处不用class的原因是因为方便，后续给Vue实例混入实例成员
   function Vue (options) {
     if (!(this instanceof Vue)
     ) {
@@ -5080,11 +5096,18 @@
     }
     this._init(options);
   }
-
+  // 注册vm的_init()方法，初始化vm
   initMixin(Vue);
+  // 注册vm的$data/$props/$set/$delete/$watch
   stateMixin(Vue);
+  // 初始化事件相关方法
+  // $on/$once/$off/$emit
   eventsMixin(Vue);
+  // 初始化生命周期相关的混入方法
+  // _update/$forceUpdate/$destroy
   lifecycleMixin(Vue);
+  // 混入render
+  // $nextTick/_render
   renderMixin(Vue);
 
   /*  */

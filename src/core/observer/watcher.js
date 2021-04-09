@@ -50,9 +50,11 @@ export default class Watcher {
     isRenderWatcher?: boolean
   ) {
     this.vm = vm
+    // 渲染watcher
     if (isRenderWatcher) {
       vm._watcher = this
     }
+    // 所有watcher
     vm._watchers.push(this)
     // options
     if (options) {
@@ -79,6 +81,8 @@ export default class Watcher {
     if (typeof expOrFn === 'function') {
       this.getter = expOrFn
     } else {
+      // expOrFn 是字符串的时候，例如：{'person.name':function...}
+      // parsePath('person,name')返回一个函数获取person.name的值
       this.getter = parsePath(expOrFn)
       if (!this.getter) {
         this.getter = noop
